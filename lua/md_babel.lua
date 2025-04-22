@@ -1,27 +1,32 @@
--- main module file
 local module = require("md_babel.module")
 
 ---@class Config
----@field opt string Your config option
+---@field md_babel_path string? Path to the md-babel executable.
+---@field keymap string? Shortcut to execute the code block at cursor position.
 local config = {
-  opt = "Hello!",
+  md_babel_path = nil,
+  keymap = '<C-CR>' -- Ctrl+Enter
 }
 
----@class MyModule
 local M = {}
 
----@type Config
 M.config = config
 
 ---@param args Config?
--- you can define your setup function here. Usually configurations can be merged, accepting outside params and
--- you can also put some validation here for those.
 M.setup = function(args)
   M.config = vim.tbl_deep_extend("force", M.config, args or {})
-end
 
-M.hello = function()
-  return module.my_first_function(M.config.opt)
+  -- TODO: Is this pattern normal? Move vim.g.md_babel_executable_path solely into local config?  https://github.com/md-babel/md-babel.nvim/issues/1
+  vim.g.md_babel_executable_path = M.config.md_babel_path
+
+  vim.api.nvim_create_user_command('MdBabelExec', function()
+                                     M.execute_block_at_point()
+  end, {})
+
+  if M.config.keymap then
+    vim.keymap.set('n', M.config.keymap, M.execute_block_at_point,
+                   {noremap = true, silent = true, desc = "Execute md-babel with code block at cursor"})
+  end
 end
 
 return M
