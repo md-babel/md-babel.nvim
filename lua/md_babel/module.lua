@@ -16,7 +16,7 @@ end
 local function apply_response(response)
   -- Convert 1-based positions to Neovim's format (1-based lines, 0-based columns)
   local start_line, start_col = cursor_position(response.replacementRange.from)
-  local end_line, end_col = cursor_position()response.replacementRange.to)
+  local end_line, end_col = cursor_position(response.replacementRange.to)
 
   -- Of course here, indexing is 0-based: https://neovim.io/doc/user/api.html#nvim_buf_set_text()
   vim.api.nvim_buf_set_text(
