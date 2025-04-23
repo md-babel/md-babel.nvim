@@ -20,7 +20,7 @@ M.setup = function(args)
   vim.g.md_babel_executable_path = M.config.md_babel_path
 
   vim.api.nvim_create_user_command('MdBabelExec', function()
-                                     M.execute_block_at_point()
+                                     module.execute_block_at_point()
   end, {})
 
   if M.config.keymap then
